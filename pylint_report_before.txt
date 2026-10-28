@@ -1,0 +1,13 @@
+Pylint report - BEFORE
+Status: NOT RUN. The Pylint package is not installed in the available Python runtime.
+Command requested by handout: python -m pylint digital_wallet.py
+
+Source-reviewed findings expected from the original file:
+- C0103 naming style: camelCase function names and lower-case constants.
+- C0114/C0116 missing module and function docstrings.
+- W0102 dangerous mutable default argument `log=[]`.
+- W0603 global statement used to change the daily limit.
+- W0613 unused merchantType argument.
+- Other style/readability findings may vary by Pylint version and configuration.
+
+No actual Pylint messages or score are claimed.

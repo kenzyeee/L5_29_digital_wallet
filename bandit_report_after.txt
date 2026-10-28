@@ -1,0 +1,7 @@
+Bandit report - AFTER
+Status: NOT RUN. The Bandit package is not installed in the available Python runtime.
+Command requested by handout: python -m bandit -r digital_wallet.py
+
+Source review confirms the listed unsafe calls were replaced: the OTP uses `secrets`, PIN verification uses a salted PBKDF2-HMAC-SHA256 digest and constant-time comparison, gateway configuration is read from the environment and compared in constant time, and the temporary receipt file is created with `NamedTemporaryFile`.
+
+A zero-findings result is not claimed until Bandit is run against this file.

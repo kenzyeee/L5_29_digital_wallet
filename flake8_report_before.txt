@@ -1,0 +1,5 @@
+Flake8 report - BEFORE
+Status: NOT RUN. The Flake8 package is not installed in the available Python runtime.
+Command requested by handout: python -m flake8 digital_wallet.py
+
+Source-reviewed formatting concerns in the original file include compressed spacing around assignments and arguments, long/unevenly formatted transaction literals, and missing blank-line/docstring conventions. Exact E/W codes and line numbers require the Flake8 version and configuration and were not captured.

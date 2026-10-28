@@ -1,0 +1,11 @@
+Bandit report - BEFORE
+Status: NOT RUN. The Bandit package is not installed in the available Python runtime.
+Command requested by handout: python -m bandit -r digital_wallet.py
+
+Source-reviewed security findings expected in the original file:
+- B105: hard-coded gateway secret and wallet PIN.
+- B324: SHA-1 used for PIN digesting.
+- B311: `random.randint` used to generate an OTP.
+- B306: `tempfile.mktemp` used to make a temporary filename.
+
+Actual Bandit severity/confidence and line output depend on the installed Bandit version and were not captured.
