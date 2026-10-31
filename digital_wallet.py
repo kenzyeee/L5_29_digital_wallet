@@ -12,7 +12,7 @@ PIN_SALT = b"lab5-demo-wallet-salt"
 WALLET_PIN_HASH = hashlib.pbkdf2_hmac("sha256", b"4321", PIN_SALT, 200_000)
 GATEWAY_SECRET = os.environ.get("GATEWAY_SECRET")
 CASHBACK_RATE = 0.02
-DAILY_LIMIT = 1000
+wallet_config = {"daily_limit": 1000}
 wallet = {"balance": 0.0}
 transactions = []
 
@@ -42,9 +42,8 @@ def add_money(amount, source="UPI", log=None):
 
 def set_daily_limit(new_limit):
     """Set the maximum amount allowed for a single payment."""
-    global DAILY_LIMIT
     if new_limit >= 0:
-        DAILY_LIMIT = new_limit
+        wallet_config["daily_limit"] = new_limit
 
 
 def pay_merchant(merchant, amount, pin):
@@ -52,7 +51,11 @@ def pay_merchant(merchant, amount, pin):
     if not hmac.compare_digest(hash_pin(pin), WALLET_PIN_HASH):
         print("Wrong PIN for payment to", merchant)
         return False
-    if amount <= 0 or amount > wallet["balance"] or amount > DAILY_LIMIT:
+    if (
+        amount <= 0
+        or amount > wallet["balance"]
+        or amount > wallet_config["daily_limit"]
+    ):
         print("Payment to", merchant, "declined")
         return False
     wallet["balance"] -= amount
@@ -119,4 +122,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
