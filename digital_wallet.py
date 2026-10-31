@@ -109,7 +109,9 @@ def main():
     pay_merchant("Grocery Mart", 350, "0000")
     pay_merchant("Pharmacy", 420, "4321")
     mini_statement()
-    print("Cashback on 420:", cashback_for(420, "health"))
+    print(
+        "Cashback on 420:", cashback_for(420, "health")
+    )
     print("Gateway check:", check_gateway("wrong"))
     print("Final balance: Rs.", wallet["balance"])
     credit_amounts = [

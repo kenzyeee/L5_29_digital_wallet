@@ -1,5 +1,0 @@
-Flake8 report - AFTER
-Status: NOT RUN. The Flake8 package is not installed in the available Python runtime.
-Command requested by handout: python -m flake8 digital_wallet.py
-
-The submitted source was formatted consistently and Python byte-compilation succeeded. A clean Flake8 result cannot be verified in this runtime.

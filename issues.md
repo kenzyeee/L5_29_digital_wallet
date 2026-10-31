@@ -1,15 +1,16 @@
 # Static analysis issue table
 
-The original `digital_wallet.py` was reviewed from the repository's `main` branch. The analysis packages were not installed in the available runtime, so findings below are source-reviewed against common Pylint, Bandit, and Flake8 checks; line references refer to the original file and are approximate where reported tools could shift their own output.
+The table records findings from Pylint 4.1.3, Bandit 1.9.4, and Flake8 7.5.0 against the original `digital_wallet.py` from commit `0d188e2`. High and medium severity security findings appear first, followed by low severity and code quality findings.
 
 | Issue | Type | Line(s) | Description | Fix Approach |
 |---|---|---:|---|---|
-| `tempfile.mktemp()` creates a race-prone temporary filename | Security (Bandit B306) | 58 | The name can be claimed by another process before the file is created. | Use `NamedTemporaryFile` to create the file atomically. |
-| SHA-1 used for PIN comparison | Security (Bandit B324) | 14 | SHA-1 is not suitable for password/PIN storage. | Use salted PBKDF2-HMAC-SHA256 and constant-time digest comparison. |
-| Non-cryptographic random OTP | Security (Bandit B311) | 62 | `random.randint` is predictable and inappropriate for authentication codes. | Generate the OTP with `secrets.randbelow`. |
-| Embedded gateway credential and PIN | Security (Bandit B105) | 6-7 | Literal secret values can be recovered from source. | Read gateway secret from the environment and keep the demo PIN only as a salted PBKDF2 digest. |
-| Mutable default `log=[]` | Correctness (Pylint W0102) | 17 | Calls without a log share one mutable list across invocations. | Default to `None`; append only when a caller supplies a list. |
-| Unused cashback category | Maintainability (Pylint W0613) | 48 | `merchantType` is accepted but never affects the standard 2% calculation. | Mark the intentionally unused category with a leading underscore and document standard cashback behavior. |
-| Naming, whitespace, and missing docstrings | Style (Pylint / Flake8) | throughout | CamelCase names, compressed statements, and absent documentation reduce readability and trigger style checks. | Use snake_case, consistent formatting, and concise docstrings. |
+| SHA-1 used to hash the wallet PIN | Security (Bandit B324, High) | 14 | SHA-1 is a weak general-purpose hash and should not protect PIN credentials. | Replace it with PBKDF2-HMAC-SHA256, a random salt, and constant-time digest comparison. |
+| Race-prone temporary filename | Security (Bandit B306, Medium) | 60 | `tempfile.mktemp()` returns a name without creating the file, leaving a race for another process to claim it. | Create the receipt file atomically with `NamedTemporaryFile`. |
+| Hard-coded gateway credential | Security (Bandit B105, Low) | 6 | The gateway key is embedded in source and would be exposed to anyone who can read it. | Read the gateway key from the `GATEWAY_SECRET` environment variable and compare it in constant time. |
+| Predictable OTP generator | Security (Bandit B311, Low) | 64 | `random.randint()` is not intended for security-sensitive codes. | Generate the one-time code with `secrets.randbelow()`. |
+| Mutable default argument | Correctness (Pylint W0102) | 17 | The default `log=[]` is shared across calls, so data can leak between invocations. | Use `None` as the default and append only when a list is supplied. |
+| Global daily-limit update | Maintainability (Pylint W0603) | 28 | The setter changes module state through a `global` statement. | Store the setting in a configuration mapping and update that mapping. |
+| Naming and missing documentation | Maintainability (Pylint C0103, C0114, C0116) | throughout | CamelCase names and missing module/function docstrings reduce consistency and clarity. | Use snake_case names and add concise docstrings. |
+| Formatting violations | Style (Flake8 E261, E225, E231, E305, W292) | 76, 78-80 | The original file has inline-comment spacing, operator/comma spacing, missing blank lines, and no final newline. | Apply consistent spacing and blank lines, and end the file with one newline. |
 
-At least four concrete issues are fixed in the submitted version: the four security findings, the mutable default, and style issues. Exact tool counts and Pylint score are unavailable without the analysis packages.
+The final program fixes every reported Bandit finding, the documented Pylint findings, and all Flake8 findings. The before/after tool outputs and final Pylint score are saved in the corresponding report files.
